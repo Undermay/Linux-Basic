@@ -1,0 +1,54 @@
+name_script(简单回显用户名)
+#!/bin/bash
+echo "local user name is $USER"
+exit 0
+
+
+for_script(测试for的脚本)//遍历输出每一个单词，并统计单词总数
+#!/bin/bash
+let "a=0"
+let "b=1"
+for world in It was the best time. It was the age of wisdom.
+do
+  echo $world
+  let a=a+b
+done
+echo "The count of the world is $a"
+exit 0
+
+
+if_script(测试if的脚本)//输入成绩，利用双重循环判断
+#!/bin/bash
+score=60
+score1=90
+score2=80
+if [ $1 -ge $[score] ]
+then
+   echo "pass"
+   if [ $1 -ge $[score1] ]
+   then
+      echo "excellent"
+   elif [ $1 -ge $[score2] ]
+   then
+      echo "great"
+   else
+      echo "cheer up"
+   fi
+else
+   echo -e "no pass\nkeep on trying"
+fi
+exit 0
+
+
+case_script(菜单)
+#!/bin/bash
+echo -e "Welcome to linux system class\n1:Unit 1\n2:Unit 2\n3:Unit 3\n4:Unit 4\n*:Exit"
+read -p "Please inter your choice:" choice
+case $choice in
+1) echo "Welcome to unit1";;
+2) echo "Welcome to unit2";;
+3) echo "Welcome to unit3";;
+4) echo "Welcome to unit4";;
+*) echo "Exit";;
+esac
+exit 0

@@ -1,0 +1,332 @@
+笔试：综述类：20分 内容、原理、切换模式、
+     分析类：40分 shell脚本
+     编写类：40分 定时执行 cortime 每月 日 时 周 等等
+                 shell脚本 for while case read
+用户、类型、用户组、
+文件读写权限及修改
+查看、创建、删除、压缩、打包
+
+/** 磁盘管理 + 网络编程 不考 */
+
+防火墙管理、设置名称、yum下载
+cpu利用率、内存使用、查看进程、调度进程、前台后台的调用、
+常用目录、创建新用户、修改密码、网络模式、
+
+什么是操作系统：是指控制和管理整个计算机系统的硬件和软件资源、并且合理的调度和组织计算机的任务与资源分配，给用户和其他软件提供接口和环境的系统软件；时计算机系统中最基本的系统软件。
+处理器管理：处理中断事件、针对不同情况进行不同的处理器调动；
+
+POSIX标准：可移植操作系统接口，Linux时完全遵循POSIX标准的。
+
+linux：自由免费，源代码开放的 操作系统 不受任何商业化软件版权制约
+
+CentO S：开源软件贡献者和用户的社区 进行对源代码重新编译
+
+安装：根密码、创建用户、安装目的地  有警告项
+
+关机：shutdown halt poweroff  reboot重启
+
+文件路径：
+     绝对路径：由根目录 / 开始写起的文件名或目录名称，不依赖当前的目录结构位置
+
+     相对路径：相对于当前路径的文件名或目录名称，由目录结构中当前的未知开始
+
+mv file1 file3 将file1改名为file3
+mv file2 test/ 将file2移动到test
+
+find -name "*est*"
+find去硬盘找，locate旨在/var/lib/slocate资料库中找；
+locate速度比find快，因为是查找数据库，并不是真的查找。而数据库需自己维护或者系统更新。
+
+which 查找命令的路径： which bash     #/usr/bin/bash
+
+软连接：ln f f1 
+以路径形式存在，类似于快捷方式，删除源文件路径失效 可以对目录连接 可以跨系统
+硬链接：
+ln -s test test1
+以文件副本形式存在，但不占用实际空间，删除源文件后不受影响
+不可以对目录连接 不可以跨系统
+
+cat -n filename 显示行号
+cat > f1 编辑f1
+cat f f1 > f2 将f f1合并到 f2中
+
+more filename 按页显示文件内容 空格向下 b向上
+less more仅可以向前移动，不能向后 less可以随意浏览 b向上  enter向下 上下键向下一行
+head -n 3 filename  前几行 tail -n 3 filemae 后几行 
+cut 剪切显示
+grep "tty1" last.log 再last中找具有tty1字符串的内容
+grep -v ...  查找不具有 tty1的。。。
+
+wc 计算字数  wc last.log      wc -l last.log 行数
+
+sort f 对f文件进行排序
+
+help -d pwd 简短帮助描述
+
+
+/etc/passwd 用户账户信息文件
+/etc/shadow 用户账户密码文件
+
+************************************
+          创建用户 UID
+useradd 用户名
+useradd -p user@123 -d /home/user user1
+
+id 用户名 显示用户的id 组id 组
+
+usermod -u 1003 user1 修改uid
+userdel user1 删除用户user1
+
+passwd user1  修改user1的密码 cat /etc/shadow 查看密码文件信息
+
+passwd -l user1 锁定用户user1 cat shadow可查看是否有！！ 表示被锁定
+
+****************************************
+          创建组
+GID 用户组id
+/etc/group 用户组
+/etc/gshadow 用户组的加密文件
+
+groupadd usergp 创建用户组
+cat /etc/group 查看用户组
+
+groupmod -g 1005 usergp 修改用户组GID  cat group查看结果
+groupdel usergp 删除组用户 cat group查看结果
+
+gpasswd -a user2 usergp1 将user2 添加到用户组 usergp1中
+gpasswd -d user2 usergp1 将user2 从usergp1中删除
+
+*****************************************
+          用户间切换
+su user2
+sudo -l 列出当前用户权限
+sudo -u user2 ls -l / 指定用户user2执行详细查看根目录命令
+
+uid 0-65535
+root 0
+系统用户centos7 1-999
+普通用户1000-65535
+
+****************************************
+          文件权限管理
+权限管理：可读可写可执行不具任何权限 r4 w2 x1 -0
+用户：超级用户（具有所有权限，无序前缀标识）
+属主用户u  属主同组g 其他用户o  全部用户a
+
+chmod ugo+r f 设置f文件对又有用户都可读取
+chmod ug+w,o-w f2 f3 设置f2 f3的拥有者及群组具有写权限，其他用户不能写入 查看结果 ls -l f2 f3
+也可以使用数字形式eg：
+     chmod 664 f2 f3 ug有读写 o只有读
+
+chown user2 /textown.log 修改textlog属主为user2 使用ll text。。。查看结果
+
+修改文件权限命令
+chgrp -c user2 /testgrp.log 修改文件testgrp.log 属主 -c为显示更改过程
+
+目录默认权限 777 drwxrwxrwx
+文件默认权限 666 -rw-rw-rw-
+系统的默认权限掩码 0022 首位0 代表特殊权限 只取后三位
+
+新建目录的权限 777-022 = 755 drwx r-x r-x
+新建文件权限   666-022 = 644 -rw- r-- r--
+
+umask 显示默认掩码
+umask 026 修改默认掩码为026
+touch testmask
+ll testmask
+-rw-r----- 666-026=640
+
+**************服务管理*****************
+unit时systemd管理系统服务的基本单位，unit有一个与配置文件对应的名称和类型组成，systemd通过不同的unit文件的后缀名来区分这些配置文件。
+
+systemd特点：更快的启动速度、提供按需启动能力、采用cgroup特性跟踪和管理进程的声明周期、能对系统进行快照和恢复
+systemctl list-units --type service 列出所有运行服务
+systemctl status xxx.service 显示xxx。服务的运行状态
+
+**防火墙**
+systemctl start firewalld.service 开启
+systemctl stop firewalld.service 关闭
+systemctl restart firewalld.service 重启
+systemctl enable firewalld.service 开机启用
+systemctl disable firewalld.service 开机禁用
+
+runlevel 查看当前系统的运行级别
+systemctl get-default 查看当前系统默认启动目标
+syetemctl list-units --type=target 查看当前系统所有的启动目标
+systemctl set-default network.target 设置目标的为默认开机启动
+systemctl set-default multi-user.target 改变系统默认启动的登录模式为multi-user
+
+**关闭、暂停、休眠**
+systemctl poweroff 关闭系统断电源
+systemctl halt 关闭系统不断电
+systemctl reboot 重启系统
+systemctl suspend 使系统待机
+systemctl hibernate 使系统休眠
+
+***************进程管理******************
+进程 PID
+五种状态：运行状态、阻塞态、停止状态、僵死状态、
+
+进程的优先级：进程的CPU资源分配就是指进程的优先级，优先级决定进程何时运行和接受多少CPU时间。 ps -l 查看进程
+
+ps -aux 显示系统所有进程
+ps -u root显示root用户进程信息
+
+top：用于实时显示进程的动态
+top -n 2设置显示进程更新次数为2
+
+who：显示当前登录用户信息，包含了系统的启动时间，进程，使用者ID等
+who -l -H　以带标题的形式显示用户登陆的进程
+
+kill：用来删除执行中的程序或工作
+kill 12056 杀死pid为12056的进程  
+kill -9 13329 彻底杀死13329进程
+
+at命令：指定时刻执行指定命令 是一次性的
+at -f process.sh now+25min 25分钟后运行process脚本
+atq 查看系统中等待的作业
+at -d 1 删除作业1
+
+******crontab********
+cron命令：用来提交和管理用户的需要周期性执行的任务
+crontab 文件：文件中每行都包括6个域， 前五个是指定命令被执行的时间，最后一个是要被执行的命令，每个域之间使用空格或者制表符分隔。
+格式:minute hour day-of-month month-of-year day-of-week commands
+ppt26 shell脚本
+
+前台进程：和用户交互，需要较高的响应速度，优先级较高
+后台进程：几乎不和用户交互，优先级较低
+          守护进程是一种特殊的后台进程，其独立于终端并周期性的执行任务或等待唤醒
+&：将&放在命令的最后，可以把该命令放到后台执行 vi & 设置vi后台运行
+ctrl+z：将当前前台命令放到后台并暂停
+ctrl+c：终端当前命令
+jobs：查看当前后台运行的作业 jobs -l 显示当前作业号及其进程号
+fg：将后台调至前台继续运行  fg 1 将号码1进程放置前台
+bg：将后台作业唤醒，并在后台运行 bg 2
+nice：用来调整优先级 nice -n 19 vi & 设置vi优先级为19 放置后台运行
+renice：重新指定一个或多个进程的优先级 
+ps -l查看所有进程信息
+renice -n 10 -p 20224 修改pid为20224的优先级为10
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+**********************************************
+
+
+
+
+https://blog.csdn.net/u010476739/article/details/127212084?spm=1001.2101.3001.6650.16&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EOPENSEARCH%7ERate-16-127212084-blog-129240987.235%5Ev28%5Epc_relevant_multi_platform_whitelistv3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EOPENSEARCH%7ERate-16-127212084-blog-129240987.235%5Ev28%5Epc_relevant_multi_platform_whitelistv3&utm_relevant_index=26
+linux：7中文件类型
+1、普通文件 -
+2、目录 d
+3、连接文件 l
+4、块设备 b
+5、字符设备 c
+6、管道文件 p
+7、套接字文件 s
+：p272文件测试操作符
+
+用户组 
+
+文件权限
+
+Linux特点：开放性、多用户、多任务、出色的速度性能、可靠的系统安全、标准的兼容性、
+
+linux系统：linux内核、linux系统文件、linux文件系统、linux应用程序、
+
+目录文件：由一组目录项组成，目录项可以是对其他文件的指向也可以是其下的子目录指向。
+
+硬链接：ln file1 file2 硬链接不是一种特殊类型的文件，只是同一个文件系统中允许 多个目录项 指向 同一文件 的机制
+
+符号链接：（软连接）ln -s file1 file2  
+
+file2为指向file1的一个指针，根据file2找到file1，然后显示file1的内容，删除file2对file1无影响，删除file1，则file2无法指向file1成为死链接
+
+mnt：临时文件系统的挂载点目录
+
+打包gzip：
+     gzip filename 生成filename.gz压缩文件gzip -d filename.gz解压
+	tar：tar -cvf myball.tar mydir 将mydir打包为myball.tar
+		 tar -zcvf myball.tar.gz mydir 打包后压缩为gz文件
+          tar -xzvf myball.tar.gz  解压文件
+
+vim：命令 插入 末行 三种运行模式
+     插入i、附加a、打开o、修改c、取代r、替换s
+     i从当前位置
+     I行首
+     a光标后
+     A光标行尾插入
+     o向下插入一行，行首
+     O向上插入一行，行首
+     yy复制光标所在行
+     nyy复制向下n行
+     dd删除所在行整行
+     ndd删除当前行往后n-1行
+     u 撤销
+
+重定向-管道重定向
+
+多用户任务管理 /etc/passwd   /etc/shadow  etc/group  /etc/gshadow(root)
+
+***使用命令行管理账户***  
+#useradd username 创建新用户
+#groupadd groupname 创建新组
+#useradd -G groppname username 创建新用户并添加到组中
+#userdel username 删除用户  -r  删除自家目录
+#groupdel groupname 删除组
+#passwd username 改密码
+
+
+
+更改属主：chown osmond users1 将user1属主改为osmond
+掩码:umask
+
+
+进程：3种  交互进程、批处理进程、守护进程、
+     ps 查看进程详细信息
+
+****管理卷组****   不考的，别看了
+
+
+网络测试 ping 
+显示Socket  ss
+
+RPM ： 提供快速安装，减少编译安装的侦错困扰
+YUM ： 解决安装RPM时所产生的依赖问题
+
+systemctl管理服务 start      stop      restart  reload.....  p145
+
+sudo
+
+openSSL ： SSL（安全套阶层）是一种为通信双方提供安全通道的协议； 具备保密性，完整性，不可否认性等安全特征的功能。
+
+防火墙p232：
+     硬件防火墙、软件防火墙
+     包过滤防火墙：查看所流经的数据包的包头
+
+linux防火墙组成：防火墙系统由内核空间的 Netfilter 框架及内核模块和用户空间用于操作net filter的一系列管理工具两部分组成。
+ipv4 ： iptables
+ipv6 ： ip6tables
+防火墙cmd配置：P224
+
+Apache：HTTP服务器NCSA http 1.3
+
+CentO S下安装Apache P372 yum install httpd httpd-tools httpd-manual

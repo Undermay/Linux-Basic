@@ -1,0 +1,32 @@
+三、操作题
+1、统计日历，并把日历放到一个文件中
+#touch file1
+#cal 4 2023 > file1
+
+2、新建一个用户，密码设置为123456，并将其加入root组中，最后删除用户，请写出命令
+#useradd -p 123456 user1
+#gpasswd -a user1 root
+#userdel user1
+
+3、递归生成目录a及b，a作为当前目录的子目录，b作为a的子目录，请写出命令
+#cd .
+#mkdir -pv a/b
+
+4、分别利用管道线和不利用管道线在passwd文件中搜索root字符串
+#cat /etc/passwd | grep root
+#grep "root" /etc/passwd
+
+5、某系统管理员日常工作内容为：每天晚上九点删除临时文件，请写出命令
+vim delete.sh
+#!/bin/bash
+dir=/tmp 
+files=`ls ${dir}`
+for file in $files
+do
+if [ -e ${dir}/${file} ];then
+rm -f ${dir}/${file}
+fi
+done
+chmod 755 delete.sh
+crontab -e
+0 21 * * * /delete.sh
